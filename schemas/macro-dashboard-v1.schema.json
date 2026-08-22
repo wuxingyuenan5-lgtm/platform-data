@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Macro Dashboard Data Contract v1",
+  "type": "object",
+  "required": ["schemaVersion", "status", "seriesId", "observations"],
+  "properties": {
+    "schemaVersion": {"type": "string"},
+    "seriesId": {"type": "string"},
+    "status": {"enum": ["ready", "partial", "degraded", "stale", "no_data", "not_configured", "error"]},
+    "observations": {"type": "array"}
+  }
+}
