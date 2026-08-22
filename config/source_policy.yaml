@@ -1,0 +1,22 @@
+version: 1
+priority:
+  - official
+  - licensed_provider
+  - public_distribution
+fallback_policy:
+  allow_backup_source: true
+  max_retries: 2
+  preserve_last_known_good: true
+sources:
+  fred:
+    type: api
+    enabled: true
+  treasury:
+    type: official_distribution
+    enabled: true
+  yahoo_chart:
+    type: convenience_backup
+    enabled: true
+    restrictions:
+      - cached
+      - low_frequency
