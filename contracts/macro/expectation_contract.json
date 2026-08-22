@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "name": "macro_expectation_contract",
+  "description": "Macro expectation event data contract for hedge board.",
+  "fields": {
+    "status": "ready|partial|stale|error",
+    "source": "string",
+    "updatedAt": "ISO-8601 datetime",
+    "events": [
+      {
+        "id": "string",
+        "category": "monetary_policy|macro|geopolitics|election",
+        "title": "string",
+        "outcome": "string",
+        "probabilityPct": "number",
+        "history": "array"
+      }
+    ]
+  }
+}
