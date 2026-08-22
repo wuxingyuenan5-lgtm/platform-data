@@ -1,0 +1,21 @@
+schemaVersion: "1.0"
+series:
+  - id: us_real_gdp_yoy
+    provider: fred
+    sourceSeriesId: GDPC1
+    transform: yoy
+    unit: percent
+  - id: us_cpi_yoy
+    provider: fred
+    sourceSeriesId: CPIAUCSL
+    transform: yoy
+    unit: percent
+  - id: us_core_cpi_yoy
+    provider: fred
+    sourceSeriesId: CPILFESL
+    transform: yoy
+    unit: percent
+  - id: us_treasury_10y
+    provider: treasury
+    sourceSeriesId: DGS10
+    unit: percent
