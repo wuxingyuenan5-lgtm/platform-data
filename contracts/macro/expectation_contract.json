@@ -1,19 +1,24 @@
 {
   "schemaVersion": "1.0",
   "name": "macro_expectation_contract",
-  "description": "Macro expectation event data contract for hedge board.",
+  "description": "Configuration-driven market expectation feed for the hedge-board macro module.",
+  "statuses": ["ready", "no_data", "not_configured", "stale", "error"],
   "fields": {
-    "status": "ready|partial|stale|error",
+    "status": "ready|no_data|not_configured|stale|error",
     "source": "string",
     "updatedAt": "ISO-8601 datetime",
     "events": [
       {
         "id": "string",
+        "label": "string",
         "category": "monetary_policy|macro|geopolitics|election",
-        "title": "string",
-        "outcome": "string",
-        "probabilityPct": "number",
-        "history": "array"
+        "probability": "number 0..100",
+        "history": [
+          {
+            "observedAt": "ISO-8601 datetime",
+            "probability": "number 0..100"
+          }
+        ]
       }
     ]
   }
