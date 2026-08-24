@@ -2,17 +2,21 @@
   "schemaVersion": "1.0",
   "status": "ready",
   "source": "Polymarket whitelist; CME FedWatch API not_configured",
-  "updatedAt": "2026-08-24T06:18:00Z",
+  "updatedAt": "2026-08-24T06:45:00Z",
   "events": [
     {
       "id": "us-canada-tariff-agreement-2026-08-31",
       "label": "US-Canada diplomatic agreement to lower tariffs by August 31?",
       "category": "geopolitics",
-      "probability": 10,
+      "probability": 8,
       "history": [
         {
           "observedAt": "2026-08-24T06:18:00Z",
           "probability": 10
+        },
+        {
+          "observedAt": "2026-08-24T06:45:00Z",
+          "probability": 8
         }
       ]
     },
@@ -25,6 +29,10 @@
         {
           "observedAt": "2026-08-24T06:01:00Z",
           "probability": 8
+        },
+        {
+          "observedAt": "2026-08-24T06:45:00Z",
+          "probability": 8
         }
       ]
     },
@@ -36,6 +44,10 @@
       "history": [
         {
           "observedAt": "2026-08-24T04:48:00Z",
+          "probability": 4
+        },
+        {
+          "observedAt": "2026-08-24T06:45:00Z",
           "probability": 4
         }
       ]
