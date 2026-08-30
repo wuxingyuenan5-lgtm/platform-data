@@ -17,5 +17,8 @@ series:
     unit: percent
   - id: us_treasury_10y
     provider: treasury
-    sourceSeriesId: DGS10
+    sourceSeriesId: "10 Yr"
+    sourceUrl: "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml"
     unit: percent
+    frequency: daily_business_day
+    methodologyVersion: treasury_par_yield_curve_v1
