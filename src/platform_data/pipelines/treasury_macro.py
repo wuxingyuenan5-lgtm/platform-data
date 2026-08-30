@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -12,6 +13,23 @@ from platform_data.storage.files import upsert_history_csv, write_json_if_change
 SERIES_ID = "us_treasury_10y"
 LABEL = "U.S. Treasury 10Y Par Yield"
 METHODOLOGY_VERSION = "treasury_par_yield_curve_v1"
+
+
+def _preserve_retrieved_at_when_materially_unchanged(path: Path, payload: dict[str, object]) -> None:
+    """Avoid a daily Git diff when only the fetch timestamp changed."""
+
+    if not path.exists():
+        return
+    try:
+        existing = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+
+    comparable_keys = set(payload) - {"retrievedAt"}
+    if all(existing.get(key) == payload.get(key) for key in comparable_keys):
+        previous_retrieved_at = existing.get("retrievedAt")
+        if previous_retrieved_at:
+            payload["retrievedAt"] = previous_retrieved_at
 
 
 def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -> dict[str, object]:
@@ -70,7 +88,9 @@ def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -
     history_year = int(observations[-1].date[:4])
     history_path = repo_root / "history" / SERIES_ID / f"{history_year}.csv"
 
-    json_changed = write_json_if_changed(json_path, series.model_dump(mode="json"))
+    payload = series.model_dump(mode="json")
+    _preserve_retrieved_at_when_materially_unchanged(json_path, payload)
+    json_changed = write_json_if_changed(json_path, payload)
     history_changed = upsert_history_csv(history_path, observations)
 
     return {
