@@ -10,6 +10,7 @@ from io import StringIO
 import requests
 
 from platform_data.models import Observation
+from platform_data.runtime import build_retry_session
 
 
 TREASURY_CSV_URL = (
@@ -76,7 +77,7 @@ def fetch_par_yield_series(
 
     year = request.year or datetime.now(timezone.utc).year
     url = source_url(year)
-    client = session or requests.Session()
+    client = session or build_retry_session()
     response = client.get(
         url,
         timeout=timeout,
