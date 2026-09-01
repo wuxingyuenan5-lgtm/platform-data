@@ -3,7 +3,7 @@
   "seriesId": "us_treasury_10y",
   "label": "U.S. Treasury 10Y Par Yield",
   "status": "ready",
-  "latestValue": 4.73,
+  "latestValue": 4.75,
   "unit": "percent",
   "currency": null,
   "frequency": "daily_business_day",
@@ -12,9 +12,9 @@
   "upstreamSource": "U.S. Department of the Treasury",
   "sourceSeriesId": "10 Yr",
   "sourceUrl": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?_format=csv&field_tdr_date_value=2026&page=&type=daily_treasury_yield_curve",
-  "observationDate": "2026-08-28",
-  "asOf": "2026-08-28",
-  "retrievedAt": "2026-08-30T05:29:33.935059Z",
+  "observationDate": "2026-08-31",
+  "asOf": "2026-08-31",
+  "retrievedAt": "2026-09-01T06:37:19.504566Z",
   "isStale": false,
   "methodologyVersion": "treasury_par_yield_curve_v1",
   "qualityFlags": [],
@@ -683,6 +683,10 @@
     {
       "date": "2026-08-28",
       "value": 4.73
+    },
+    {
+      "date": "2026-08-31",
+      "value": 4.75
     }
   ]
 }
