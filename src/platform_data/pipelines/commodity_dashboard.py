@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date, timedelta
 from pathlib import Path
 
 from platform_data.models import CanonicalSeries
@@ -33,7 +34,16 @@ def build_commodity_dashboard(*, root: Path | None = None) -> dict[str, object]:
                     path.read_text(encoding="utf-8")
                 )
                 all_series.append(series)
-                group.append(series.model_dump(mode="json"))
+                document = series.model_dump(mode="json")
+                cutoff = date.fromisoformat(
+                    series.observationDate or series.observations[-1].date
+                ) - timedelta(days=5 * 366)
+                document["observations"] = [
+                    item.model_dump(mode="json")
+                    for item in series.observations
+                    if date.fromisoformat(item.date) >= cutoff
+                ]
+                group.append(document)
             groups[group_id] = group
     if not all_series:
         raise RuntimeError("no Commodity dashboard series available")
