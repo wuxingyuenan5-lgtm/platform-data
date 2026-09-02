@@ -12,7 +12,7 @@ DASHBOARD_GROUPS = {
     "growthActivity": (5, ["us_cfnai", "us_cfnai_ma3"]),
     "actualInflation": (5, ["us_cpi_yoy", "us_core_cpi_yoy", "us_pce_yoy", "us_core_pce_yoy"]),
     "upstreamInflation": (5, ["us_ppi_yoy"]),
-    "marketInflation": (5, ["us_5y_breakeven", "us_10y_breakeven", "us_5y5y_forward"]),
+    "marketInflation": (1, ["us_5y_breakeven", "us_10y_breakeven", "us_5y5y_forward"]),
     "rateCorridor": (1, ["fed_target_lower", "fed_target_upper", "iorb", "on_rrp_award", "effr", "sofr"]),
 }
 
@@ -33,11 +33,16 @@ def build_macro_dashboard(*, root: Path | None = None) -> dict[str, object]:
                 days=window_years * 366
             )
             document = series.model_dump(mode="json")
-            document["observations"] = [
+            observations = [
                 item.model_dump(mode="json")
                 for item in series.observations
                 if date.fromisoformat(item.date) >= cutoff
             ]
+            if series.frequency in {"daily", "daily_business_day"} and len(observations) > 80:
+                observations = observations[::5] + (
+                    [] if observations[-1] == observations[::5][-1] else [observations[-1]]
+                )
+            document["observations"] = observations
             group.append(document)
         groups[group_id] = group
     if not all_series:
