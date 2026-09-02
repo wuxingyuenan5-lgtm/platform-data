@@ -52,6 +52,7 @@ FRED_MACRO_SERIES = (
     FredMacroDefinition("iorb", "Interest on Reserve Balances", "IORB", "percent", "daily", 7),
     FredMacroDefinition("on_rrp_award", "ON RRP Award Rate", "RRPONTSYAWARD", "percent", "daily", 7),
     FredMacroDefinition("effr", "Effective Federal Funds Rate", "EFFR", "percent", "daily_business_day", 7),
+    FredMacroDefinition("us_hy_oas", "U.S. High Yield Option-Adjusted Spread", "BAMLH0A0HYM2", "percent", "daily_business_day", 7),
 )
 
 

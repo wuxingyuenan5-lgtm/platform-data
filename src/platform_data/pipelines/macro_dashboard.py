@@ -14,6 +14,8 @@ DASHBOARD_GROUPS = {
     "upstreamInflation": (5, ["us_ppi_yoy"]),
     "marketInflation": (1, ["us_5y_breakeven", "us_10y_breakeven", "us_5y5y_forward"]),
     "rateCorridor": (1, ["fed_target_lower", "fed_target_upper", "iorb", "on_rrp_award", "effr", "sofr"]),
+    "riskHighYieldOas": (5, ["us_hy_oas"]),
+    "riskCreditRatio": (2, ["hyg_lqd_ratio"]),
 }
 
 
