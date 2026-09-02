@@ -3,7 +3,7 @@
   "seriesId": "usdcnh",
   "label": "USD/CNH",
   "status": "ready",
-  "latestValue": 6.722939968109131,
+  "latestValue": 6.723559856414795,
   "unit": "fx_rate",
   "currency": "CNH",
   "frequency": "daily_business_day",
@@ -14,7 +14,7 @@
   "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/CNH=X?range=2y&interval=1d&events=history",
   "observationDate": "2026-09-02",
   "asOf": "2026-09-02",
-  "retrievedAt": "2026-09-02T06:17:49.860432Z",
+  "retrievedAt": "2026-09-02T06:45:45.916730Z",
   "isStale": false,
   "methodologyVersion": "yahoo_adjusted_close_v1",
   "qualityFlags": [],
@@ -22,7 +22,7 @@
   "observations": [
     {
       "date": "2026-09-02",
-      "value": 6.722939968109131
+      "value": 6.723559856414795
     }
   ]
 }
