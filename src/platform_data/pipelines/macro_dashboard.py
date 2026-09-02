@@ -16,6 +16,18 @@ DASHBOARD_GROUPS = {
     "rateCorridor": (1, ["fed_target_lower", "fed_target_upper", "iorb", "on_rrp_award", "effr", "sofr"]),
     "riskHighYieldOas": (5, ["us_hy_oas"]),
     "riskCreditRatio": (2, ["hyg_lqd_ratio"]),
+    "globalM2Level": (
+        10,
+        [
+            "global_m2_proxy",
+            "global_m2_us_component",
+            "global_m2_cn_component",
+            "global_m2_eu_component",
+            "global_m2_jp_component",
+            "global_m2_gb_component",
+        ],
+    ),
+    "globalM2YoY": (10, ["global_m2_proxy_yoy"]),
 }
 
 
