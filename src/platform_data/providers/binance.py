@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import json
+import shutil
+import subprocess
 from collections.abc import Callable
 from datetime import UTC, datetime
+from urllib.parse import urlparse
 
 import requests
 
@@ -14,6 +18,7 @@ SPOT_KLINES_URL = "https://data-api.binance.vision/api/v3/klines"
 FUNDING_URL = "https://fapi.binance.com/fapi/v1/fundingRate"
 OPEN_INTEREST_URL = "https://fapi.binance.com/futures/data/openInterestHist"
 BASIS_URL = "https://fapi.binance.com/futures/data/basis"
+DNS_OVER_HTTPS_URL = "https://cloudflare-dns.com/dns-query"
 
 
 def _utc_date(timestamp_ms: object) -> str:
@@ -98,19 +103,64 @@ def _fetch(
     timeout: float = 30,
 ) -> tuple[list[Observation], str]:
     client = session or build_retry_session()
-    response = client.get(
-        url,
-        params=params,
-        timeout=timeout,
-        headers={
-            "User-Agent": "platform-data/0.1 (+https://github.com/wuxingyuenan5-lgtm/platform-data)"
-        },
-    )
-    response.raise_for_status()
-    observations = parser(response.json())
+    headers = {
+        "User-Agent": "platform-data/0.1 (+https://github.com/wuxingyuenan5-lgtm/platform-data)"
+    }
+    try:
+        response = client.get(url, params=params, timeout=timeout, headers=headers)
+        response.raise_for_status()
+        payload = response.json()
+        source_url = response.url
+    except requests.RequestException:
+        payload, source_url = _fetch_json_via_doh(
+            url, params=params, headers=headers, timeout=timeout
+        )
+    observations = parser(payload)
     if not observations:
         raise RuntimeError(f"Binance returned no observations for {params}")
-    return observations, response.url
+    return observations, source_url
+
+
+def _fetch_json_via_doh(
+    url: str,
+    *,
+    params: dict[str, str],
+    headers: dict[str, str],
+    timeout: float,
+) -> tuple[object, str]:
+    host = urlparse(url).hostname
+    if host != "fapi.binance.com":
+        raise RuntimeError("DNS-over-HTTPS fallback is restricted to Binance Futures")
+    curl = shutil.which("curl")
+    if curl is None:
+        raise RuntimeError("curl is required for verified DNS-over-HTTPS fallback")
+    prepared_url = requests.Request("GET", url, params=params).prepare().url
+    if prepared_url is None:
+        raise RuntimeError("failed to prepare Binance request URL")
+    result = subprocess.run(
+        [
+            curl,
+            "--silent",
+            "--show-error",
+            "--fail",
+            "--max-time",
+            str(timeout),
+            "--doh-url",
+            DNS_OVER_HTTPS_URL,
+            "--header",
+            f"User-Agent: {headers['User-Agent']}",
+            prepared_url,
+        ],
+        capture_output=True,
+        text=True,
+        timeout=timeout + 5,
+        check=False,
+    )
+    if result.returncode == 0:
+        return json.loads(result.stdout), prepared_url
+    raise RuntimeError(
+        f"verified Binance DNS fallback failed: {result.stderr.strip()}"
+    )
 
 
 def fetch_spot_daily(symbol: str, **kwargs) -> tuple[list[Observation], str]:

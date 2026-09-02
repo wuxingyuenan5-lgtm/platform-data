@@ -1,7 +1,6 @@
-name: crypto-data
+name: crypto-code-ci
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - "src/platform_data/providers/binance.py"
@@ -9,19 +8,13 @@ on:
       - "src/platform_data/pipelines/crypto_dashboard.py"
       - "tests/test_binance.py"
       - "tests/test_crypto_dashboard.py"
+      - "src/platform_data/cli.py"
+      - "src/platform_data/local_database.py"
+      - "tests/test_local_database.py"
+      - "pyproject.toml"
       - ".github/workflows/crypto-data.yml"
-  schedule:
-    - cron: "17 */6 * * *"
-
-permissions:
-  contents: write
-
-concurrency:
-  group: platform-data-crypto-refresh
-  cancel-in-progress: false
-
 jobs:
-  refresh:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,20 +25,3 @@ jobs:
         run: python -m pip install -e . pytest
       - name: Unit tests
         run: python -m pytest -q
-      - name: Refresh Binance Crypto core
-        run: |
-          python -m platform_data.cli refresh-binance-crypto-core
-          python -m platform_data.cli build-crypto-dashboard
-      - name: Commit material data changes only
-        shell: bash
-        run: |
-          git add public/v1/crypto/
-          if git diff --cached --quiet; then
-            echo "No material Crypto data changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "data: refresh Binance Crypto core"
-          git pull --rebase origin main
-          git push

@@ -1,27 +1,16 @@
-name: macro-data
+name: platform-data-ci
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - "src/platform_data/**"
       - "tests/**"
       - "config/macro_series.yaml"
       - "pyproject.toml"
+      - "scripts/refresh_local.ps1"
       - ".github/workflows/macro-data.yml"
-  schedule:
-    # 01:30 UTC Tue-Sat captures the prior U.S. business-day Treasury close.
-    - cron: "30 1 * * 2-6"
-
-permissions:
-  contents: write
-
-concurrency:
-  group: platform-data-macro-refresh
-  cancel-in-progress: false
-
 jobs:
-  refresh:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,27 +26,3 @@ jobs:
 
       - name: Unit tests
         run: python -m pytest -q
-
-      - name: Refresh U.S. Treasury market tenors
-        run: |
-          python -m platform_data.cli refresh-treasury-market-tenors
-          python -m platform_data.cli refresh-fred-macro-core
-          python -m platform_data.cli refresh-yahoo-macro-market
-          python -m platform_data.cli refresh-global-m2
-          python -m platform_data.cli refresh-chinabond-market-tenors
-          python -m platform_data.cli build-macro-market-detail
-          python -m platform_data.cli build-macro-dashboard
-
-      - name: Commit material data changes only
-        shell: bash
-        run: |
-          git add public/v1/macro/series/ public/v1/macro/market-detail.json public/v1/macro/dashboard.json history/us_treasury_2y/ history/us_treasury_10y/ history/us_treasury_30y/
-          if git diff --cached --quiet; then
-            echo "No material Treasury data changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "data: refresh U.S. Treasury 10Y"
-          git pull --rebase origin main
-          git push

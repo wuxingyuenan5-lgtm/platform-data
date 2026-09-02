@@ -1,4 +1,8 @@
+from datetime import UTC, datetime
+from types import SimpleNamespace
+
 from platform_data.providers.binance import (
+    _fetch_json_via_doh,
     parse_basis,
     parse_funding,
     parse_open_interest,
@@ -55,4 +59,24 @@ def test_spot_parser_excludes_open_daily_candle():
     assert [(item.date, item.value) for item in spot] == [("2026-09-01", 10)]
 
 
-from datetime import UTC, datetime
+def test_futures_dns_fallback_uses_verified_doh(monkeypatch):
+    captured = {}
+    monkeypatch.setattr(
+        "platform_data.providers.binance.shutil.which", lambda _name: "curl"
+    )
+
+    def fake_run(args, **_kwargs):
+        captured["args"] = args
+        return SimpleNamespace(returncode=0, stdout="[]", stderr="")
+
+    monkeypatch.setattr("platform_data.providers.binance.subprocess.run", fake_run)
+    payload, source_url = _fetch_json_via_doh(
+        "https://fapi.binance.com/fapi/v1/fundingRate",
+        params={"symbol": "BTCUSDT"},
+        headers={"User-Agent": "test"},
+        timeout=5,
+    )
+    assert payload == []
+    assert "--doh-url" in captured["args"]
+    assert "https://cloudflare-dns.com/dns-query" in captured["args"]
+    assert source_url.endswith("symbol=BTCUSDT")

@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+from pathlib import Path
 
+from platform_data.local_database import sync_local_database
 from platform_data.pipelines.binance_crypto import refresh_binance_crypto_core
 from platform_data.pipelines.cftc_commodity import refresh_cftc_commodity_core
 from platform_data.pipelines.chinabond_macro import refresh_chinabond_market_tenors
@@ -22,6 +25,12 @@ from platform_data.pipelines.yahoo_macro import refresh_yahoo_macro_market
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="platform-data pipeline runner")
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=None,
+        help="local data root (defaults to PLATFORM_DATA_ROOT or the repository root)",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     treasury = subparsers.add_parser(
@@ -70,71 +79,80 @@ def main() -> int:
     subparsers.add_parser(
         "build-crypto-dashboard", help="build Crypto V1 dashboard contract"
     )
+    subparsers.add_parser(
+        "sync-local-database", help="rebuild the local DuckDB mirror from canonical JSON"
+    )
 
     args = parser.parse_args()
+    data_root = args.data_root or Path(os.getenv("PLATFORM_DATA_ROOT", Path.cwd()))
 
     if args.command == "refresh-treasury-10y":
-        result = refresh_treasury_10y(year=args.year)
+        result = refresh_treasury_10y(root=data_root, year=args.year)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "build-macro-market-detail":
-        result = build_macro_market_detail()
+        result = build_macro_market_detail(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-treasury-market-tenors":
-        result = refresh_treasury_market_tenors(year=args.year)
+        result = refresh_treasury_market_tenors(root=data_root, year=args.year)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-fred-macro-core":
-        result = refresh_fred_macro_core()
+        result = refresh_fred_macro_core(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-yahoo-macro-market":
-        result = refresh_yahoo_macro_market()
+        result = refresh_yahoo_macro_market(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "build-macro-dashboard":
-        result = build_macro_dashboard()
+        result = build_macro_dashboard(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-global-m2":
-        result = refresh_global_m2()
+        result = refresh_global_m2(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-chinabond-market-tenors":
-        result = refresh_chinabond_market_tenors()
+        result = refresh_chinabond_market_tenors(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-cftc-commodity-core":
-        result = refresh_cftc_commodity_core()
+        result = refresh_cftc_commodity_core(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "build-commodity-dashboard":
-        result = build_commodity_dashboard()
+        result = build_commodity_dashboard(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-eia-commodity-core":
-        result = refresh_eia_commodity_core()
+        result = refresh_eia_commodity_core(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "refresh-binance-crypto-core":
-        result = refresh_binance_crypto_core()
+        result = refresh_binance_crypto_core(root=data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
     if args.command == "build-crypto-dashboard":
-        result = build_crypto_dashboard()
+        result = build_crypto_dashboard(root=data_root)
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "sync-local-database":
+        result = sync_local_database(data_root)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
