@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "marketId": "macro",
+  "status": "ready",
+  "asOf": "2026-08-31",
+  "retrievedAt": "2026-09-01T06:37:19.504566Z",
+  "rows": [
+    {
+      "id": "macro-us10y",
+      "name": "美国 10Y",
+      "symbol": "US10Y",
+      "status": "ready",
+      "unit": "percent",
+      "changeUnit": "basis_points",
+      "frequency": "daily_business_day",
+      "timezone": "America/New_York",
+      "observationDate": "2026-08-31",
+      "asOf": "2026-08-31",
+      "source": "us_treasury",
+      "sourceUrl": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2026/all?_format=csv&field_tdr_date_value=2026&page=&type=daily_treasury_yield_curve",
+      "methodologyVersion": "market_detail_windows_v1",
+      "qualityFlags": [
+        "insufficient_52w_history"
+      ],
+      "close": 4.75,
+      "change1d": 2.0,
+      "change1w": 5.0,
+      "change1m": 0.0,
+      "changeQtd": 31.0,
+      "changeYtd": null,
+      "change1y": null,
+      "high52w": null,
+      "distance52wHigh": null,
+      "spark30d": [
+        4.7,
+        4.63,
+        4.63,
+        4.69,
+        4.65,
+        4.72,
+        4.7,
+        4.68,
+        4.63,
+        4.68,
+        4.72,
+        4.71,
+        4.65,
+        4.69,
+        4.74,
+        4.7,
+        4.64,
+        4.66,
+        4.67,
+        4.73,
+        4.75
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://platform-data.example/schemas/market-detail-v1.schema.json",
+  "title": "Shared Market Detail v1",
+  "type": "object",
+  "required": ["schemaVersion", "marketId", "status", "rows"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "marketId": { "type": "string", "minLength": 1 },
+    "status": {
+      "enum": ["ready", "partial", "degraded", "stale", "no_data", "error"]
+    },
+    "asOf": { "type": ["string", "null"] },
+    "retrievedAt": { "type": ["string", "null"], "format": "date-time" },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "symbol",
+          "status",
+          "changeUnit",
+          "frequency",
+          "timezone",
+          "methodologyVersion",
+          "spark30d"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "symbol": { "type": "string" },
+          "status": {
+            "enum": ["ready", "partial", "degraded", "stale", "no_data", "error"]
+          },
+          "changeUnit": { "enum": ["percent", "basis_points", "absolute"] },
+          "frequency": { "type": "string" },
+          "timezone": { "type": "string" },
+          "methodologyVersion": { "type": "string" },
+          "spark30d": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    }
+  }
+}
