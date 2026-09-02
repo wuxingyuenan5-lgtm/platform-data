@@ -36,6 +36,13 @@ MACRO_FRED_ROWS = (
     ("us_cpi", "macro-cpi", "美国 CPI", "CPIAUCSL", "percent"),
     ("us_pce", "macro-pce", "美国 PCE", "PCEPI", "percent"),
     ("us_unrate", "macro-unrate", "美国失业率", "UNRATE", "basis_points"),
+    ("vix", "macro-vix", "VIX 波动率", "VIX", "percent"),
+)
+MACRO_YAHOO_ROWS = (
+    ("dxy", "macro-dxy", "美元指数", "DXY"),
+    ("usdcnh", "macro-usdcnh", "离岸人民币", "USDCNH"),
+    ("tlt", "macro-tlt", "长久期美债 ETF", "TLT"),
+    ("hyg", "macro-hyg", "高收益债 ETF", "HYG"),
 )
 
 
@@ -102,6 +109,26 @@ def build_macro_market_detail(*, root: Path | None = None) -> dict[str, object]:
                 "sourceUrl": series.sourceUrl,
                 "methodologyVersion": "market_detail_windows_v1",
                 "qualityFlags": row_flags,
+                **metrics,
+            }
+        )
+    for series_id, row_id, name, symbol in MACRO_YAHOO_ROWS:
+        source_path = repo_root / "public" / "v1" / "macro" / "series" / f"{series_id}.json"
+        if not source_path.exists():
+            continue
+        series = CanonicalSeries.model_validate_json(source_path.read_text(encoding="utf-8"))
+        series_documents.append(series)
+        metrics = calculate_market_detail_metrics(
+            series.observations, frequency=series.frequency, change_mode="percent"
+        )
+        row_flags = list(dict.fromkeys([*series.qualityFlags, *metrics.pop("qualityFlags")]))
+        rows.append(
+            {
+                "id": row_id, "name": name, "symbol": symbol, "status": series.status,
+                "unit": series.unit, "changeUnit": "percent", "frequency": series.frequency,
+                "timezone": series.timezone, "observationDate": series.observationDate,
+                "asOf": series.asOf, "source": series.source, "sourceUrl": series.sourceUrl,
+                "methodologyVersion": "market_detail_windows_v1", "qualityFlags": row_flags,
                 **metrics,
             }
         )

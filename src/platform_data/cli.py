@@ -6,6 +6,7 @@ import json
 from platform_data.pipelines.treasury_macro import refresh_treasury_10y, refresh_treasury_market_tenors
 from platform_data.pipelines.market_detail import build_macro_market_detail
 from platform_data.pipelines.fred_macro import refresh_fred_macro_core
+from platform_data.pipelines.yahoo_macro import refresh_yahoo_macro_market
 
 
 def main() -> int:
@@ -20,6 +21,7 @@ def main() -> int:
     tenors.add_argument("--year", type=int, default=None)
     subparsers.add_parser("build-macro-market-detail", help="build shared macro market-detail metrics")
     subparsers.add_parser("refresh-fred-macro-core", help="refresh approved FRED macro core series")
+    subparsers.add_parser("refresh-yahoo-macro-market", help="refresh approved Yahoo macro instruments")
 
     args = parser.parse_args()
 
@@ -40,6 +42,11 @@ def main() -> int:
 
     if args.command == "refresh-fred-macro-core":
         result = refresh_fred_macro_core()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "refresh-yahoo-macro-market":
+        result = refresh_yahoo_macro_market()
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 

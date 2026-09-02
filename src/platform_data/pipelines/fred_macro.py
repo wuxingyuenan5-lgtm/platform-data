@@ -22,6 +22,7 @@ class FredMacroDefinition:
 
 
 FRED_MACRO_SERIES = (
+    FredMacroDefinition("vix", "Cboe Volatility Index", "VIXCLS", "index", "daily_business_day", 7),
     FredMacroDefinition("dff", "Effective Federal Funds Rate", "DFF", "percent", "daily", 7),
     FredMacroDefinition("sofr", "Secured Overnight Financing Rate", "SOFR", "percent", "daily_business_day", 7),
     FredMacroDefinition("us_10y_real_yield", "U.S. 10Y Real Yield", "DFII10", "percent", "daily_business_day", 7),
