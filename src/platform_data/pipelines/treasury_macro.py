@@ -36,8 +36,15 @@ def refresh_treasury_tenor(
         raise ValueError(f"unsupported published Treasury tenor: {tenor}")
     series_id, label, source_series_id = TENOR_METADATA[tenor]
     target_year = year or now.year
-    years = [target_year] if year is not None else [target_year - 1, target_year]
-    observations = []
+    json_path = repo_root / "public" / "v1" / "macro" / "series" / f"{series_id}.json"
+    has_previous_year = False
+    if json_path.exists():
+        existing = CanonicalSeries.model_validate_json(json_path.read_text(encoding="utf-8"))
+        has_previous_year = any(item.date.startswith(f"{target_year - 1}-") for item in existing.observations)
+    years = [target_year]
+    if year is None and not has_previous_year:
+        years.insert(0, target_year - 1)
+    observations = list(existing.observations) if json_path.exists() and year is None else []
     source_urls: list[str] = []
     for fetch_year in years:
         fetched, fetched_url = fetch_par_yield_series(
@@ -89,8 +96,6 @@ def refresh_treasury_tenor(
         rightsScope="official_public_data",
         observations=observations,
     )
-
-    json_path = repo_root / "public" / "v1" / "macro" / "series" / f"{series_id}.json"
 
     payload = series.model_dump(mode="json")
     preserve_volatile_fields_when_materially_unchanged(json_path, payload)
