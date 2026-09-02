@@ -13,18 +13,40 @@ from platform_data.runtime import (
 from platform_data.storage.files import upsert_history_csv, write_json_if_changed
 
 
-SERIES_ID = "us_treasury_10y"
-LABEL = "U.S. Treasury 10Y Par Yield"
 METHODOLOGY_VERSION = "treasury_par_yield_curve_v1"
+TENOR_METADATA = {
+    "2y": ("us_treasury_2y", "U.S. Treasury 2Y Par Yield", "2 Yr"),
+    "10y": ("us_treasury_10y", "U.S. Treasury 10Y Par Yield", "10 Yr"),
+    "30y": ("us_treasury_30y", "U.S. Treasury 30Y Par Yield", "30 Yr"),
+}
 
 
 def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -> dict[str, object]:
-    """Fetch, validate, publish and persist the U.S. Treasury 10Y series."""
+    return refresh_treasury_tenor("10y", root=root, year=year)
+
+
+def refresh_treasury_tenor(
+    tenor: str, *, root: Path | None = None, year: int | None = None
+) -> dict[str, object]:
+    """Fetch, validate and publish one approved Treasury tenor with sufficient history."""
 
     repo_root = root or Path.cwd()
     now = datetime.now(timezone.utc)
-    request = TreasurySeriesRequest(tenor="10y", year=year)
-    observations, source_url = fetch_par_yield_series(request)
+    if tenor not in TENOR_METADATA:
+        raise ValueError(f"unsupported published Treasury tenor: {tenor}")
+    series_id, label, source_series_id = TENOR_METADATA[tenor]
+    target_year = year or now.year
+    years = [target_year] if year is not None else [target_year - 1, target_year]
+    observations = []
+    source_urls: list[str] = []
+    for fetch_year in years:
+        fetched, fetched_url = fetch_par_yield_series(
+            TreasurySeriesRequest(tenor=tenor, year=fetch_year)
+        )
+        observations.extend(fetched)
+        source_urls.append(fetched_url)
+    observations = sorted({item.date: item for item in observations}.values(), key=lambda item: item.date)
+    source_url = source_urls[-1]
 
     flags = validate_observations(observations, min_value=-5.0, max_value=30.0)
     fatal_flags = {
@@ -46,8 +68,8 @@ def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -
         flags.append("stale_latest_observation")
 
     series = CanonicalSeries(
-        seriesId=SERIES_ID,
-        label=LABEL,
+        seriesId=series_id,
+        label=label,
         status="stale" if is_stale else "ready",
         latestValue=latest.value,
         unit="percent",
@@ -56,7 +78,7 @@ def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -
         timezone="America/New_York",
         source="us_treasury",
         upstreamSource="U.S. Department of the Treasury",
-        sourceSeriesId="10 Yr",
+        sourceSeriesId=source_series_id,
         sourceUrl=source_url,
         observationDate=latest.date,
         asOf=latest.date,
@@ -68,17 +90,19 @@ def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -
         observations=observations,
     )
 
-    json_path = repo_root / "public" / "v1" / "macro" / "series" / f"{SERIES_ID}.json"
-    history_year = int(observations[-1].date[:4])
-    history_path = repo_root / "history" / SERIES_ID / f"{history_year}.csv"
+    json_path = repo_root / "public" / "v1" / "macro" / "series" / f"{series_id}.json"
 
     payload = series.model_dump(mode="json")
     preserve_volatile_fields_when_materially_unchanged(json_path, payload)
     json_changed = write_json_if_changed(json_path, payload)
-    history_changed = upsert_history_csv(history_path, observations)
+    history_changed = False
+    for history_year in sorted({int(item.date[:4]) for item in observations}):
+        history_path = repo_root / "history" / series_id / f"{history_year}.csv"
+        year_observations = [item for item in observations if int(item.date[:4]) == history_year]
+        history_changed = upsert_history_csv(history_path, year_observations) or history_changed
 
     return {
-        "series_id": SERIES_ID,
+        "series_id": series_id,
         "status": series.status,
         "as_of": series.asOf,
         "latest_value": series.latestValue,
@@ -86,3 +110,12 @@ def refresh_treasury_10y(*, root: Path | None = None, year: int | None = None) -
         "history_changed": history_changed,
         "source_url": source_url,
     }
+
+
+def refresh_treasury_market_tenors(
+    *, root: Path | None = None, year: int | None = None
+) -> list[dict[str, object]]:
+    return [
+        refresh_treasury_tenor(tenor, root=root, year=year)
+        for tenor in ("2y", "10y", "30y")
+    ]

@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from platform_data.pipelines.treasury_macro import refresh_treasury_10y
+from platform_data.pipelines.treasury_macro import refresh_treasury_10y, refresh_treasury_market_tenors
 from platform_data.pipelines.market_detail import build_macro_market_detail
 
 
@@ -13,6 +13,10 @@ def main() -> int:
 
     treasury = subparsers.add_parser("refresh-treasury-10y", help="refresh official U.S. Treasury 10Y data")
     treasury.add_argument("--year", type=int, default=None)
+    tenors = subparsers.add_parser(
+        "refresh-treasury-market-tenors", help="refresh official U.S. Treasury 2Y/10Y/30Y data"
+    )
+    tenors.add_argument("--year", type=int, default=None)
     subparsers.add_parser("build-macro-market-detail", help="build shared macro market-detail metrics")
 
     args = parser.parse_args()
@@ -24,6 +28,11 @@ def main() -> int:
 
     if args.command == "build-macro-market-detail":
         result = build_macro_market_detail()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "refresh-treasury-market-tenors":
+        result = refresh_treasury_market_tenors(year=args.year)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 

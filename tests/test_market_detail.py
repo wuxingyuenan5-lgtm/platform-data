@@ -4,6 +4,7 @@ from pathlib import Path
 
 from platform_data.models import Observation
 from platform_data.pipelines.market_detail import build_macro_market_detail
+from platform_data.pipelines import treasury_macro
 from platform_data.transforms.market_detail import (
     calculate_market_detail_metrics,
     derive_ratio_observations,
@@ -95,3 +96,38 @@ def test_real_treasury_history_builds_macro_vertical_slice(tmp_path: Path):
     assert document["rows"][0]["close"] == source_document["latestValue"]
     assert document["rows"][0]["changeUnit"] == "basis_points"
     assert document["rows"][0]["spark30d"]
+
+
+def test_treasury_tenor_default_refresh_keeps_previous_year_for_long_windows(
+    tmp_path: Path, monkeypatch
+):
+    def fake_fetch(request):
+        value = 4.0 if request.year == 2025 else 4.5
+        observed_on = "2025-12-31" if request.year == 2025 else "2026-09-01"
+        return (
+            [Observation(date=observed_on, value=value)],
+            f"https://example.test/{request.year}/{request.tenor}",
+        )
+
+    class FrozenDateTime:
+        @classmethod
+        def now(cls, _timezone):
+            from datetime import datetime
+
+            return datetime.fromisoformat("2026-09-02T00:00:00+00:00")
+
+    monkeypatch.setattr(treasury_macro, "fetch_par_yield_series", fake_fetch)
+    monkeypatch.setattr(treasury_macro, "datetime", FrozenDateTime)
+
+    result = treasury_macro.refresh_treasury_tenor("2y", root=tmp_path)
+    document = json.loads(
+        (tmp_path / "public/v1/macro/series/us_treasury_2y.json").read_text(encoding="utf-8")
+    )
+
+    assert result["series_id"] == "us_treasury_2y"
+    assert [item["date"] for item in document["observations"]] == [
+        "2025-12-31",
+        "2026-09-01",
+    ]
+    assert (tmp_path / "history/us_treasury_2y/2025.csv").exists()
+    assert (tmp_path / "history/us_treasury_2y/2026.csv").exists()
