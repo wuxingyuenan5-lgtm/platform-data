@@ -12,9 +12,9 @@
   "upstreamSource": "Federal Reserve Bank of St. Louis / source agency",
   "sourceSeriesId": "DFEDTARU",
   "sourceUrl": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFEDTARU&cosd=2014-09-01",
-  "observationDate": "2026-09-01",
-  "asOf": "2026-09-01",
-  "retrievedAt": "2026-09-02T06:01:21.809446Z",
+  "observationDate": "2026-09-02",
+  "asOf": "2026-09-02",
+  "retrievedAt": "2026-09-02T13:36:32.010396Z",
   "isStale": false,
   "methodologyVersion": "fred_public_csv_v1",
   "qualityFlags": [],
@@ -17554,6 +17554,10 @@
     },
     {
       "date": "2026-09-01",
+      "value": 3.75
+    },
+    {
+      "date": "2026-09-02",
       "value": 3.75
     }
   ]

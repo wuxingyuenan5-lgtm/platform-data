@@ -12,9 +12,9 @@
   "upstreamSource": "Federal Reserve Bank of St. Louis / source agency",
   "sourceSeriesId": "EFFR",
   "sourceUrl": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=EFFR&cosd=2014-09-01",
-  "observationDate": "2026-08-31",
-  "asOf": "2026-08-31",
-  "retrievedAt": "2026-09-02T06:01:28.504569Z",
+  "observationDate": "2026-09-01",
+  "asOf": "2026-09-01",
+  "retrievedAt": "2026-09-02T13:36:35.063638Z",
   "isStale": false,
   "methodologyVersion": "fred_public_csv_v1",
   "qualityFlags": [],
@@ -12070,6 +12070,10 @@
     },
     {
       "date": "2026-08-31",
+      "value": 3.63
+    },
+    {
+      "date": "2026-09-01",
       "value": 3.63
     }
   ]

@@ -3,7 +3,7 @@
   "seriesId": "sofr",
   "label": "Secured Overnight Financing Rate",
   "status": "ready",
-  "latestValue": 3.68,
+  "latestValue": 3.66,
   "unit": "percent",
   "currency": null,
   "frequency": "daily_business_day",
@@ -12,9 +12,9 @@
   "upstreamSource": "Federal Reserve Bank of St. Louis / source agency",
   "sourceSeriesId": "SOFR",
   "sourceUrl": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=SOFR&cosd=2014-09-01",
-  "observationDate": "2026-08-31",
-  "asOf": "2026-08-31",
-  "retrievedAt": "2026-09-02T05:45:16.180584Z",
+  "observationDate": "2026-09-01",
+  "asOf": "2026-09-01",
+  "retrievedAt": "2026-09-02T13:36:14.625581Z",
   "isStale": false,
   "methodologyVersion": "fred_public_csv_v1",
   "qualityFlags": [],
@@ -8423,6 +8423,10 @@
     {
       "date": "2026-08-31",
       "value": 3.68
+    },
+    {
+      "date": "2026-09-01",
+      "value": 3.66
     }
   ]
 }
