@@ -80,6 +80,7 @@ def test_ratio_uses_exact_date_intersection_without_forward_fill():
 
 def test_real_treasury_history_builds_macro_vertical_slice(tmp_path: Path):
     source = Path("public/v1/macro/series/us_treasury_10y.json")
+    source_document = json.loads(source.read_text(encoding="utf-8"))
     target = tmp_path / source
     target.parent.mkdir(parents=True)
     target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
@@ -91,6 +92,6 @@ def test_real_treasury_history_builds_macro_vertical_slice(tmp_path: Path):
 
     assert result["rows"] == 1
     assert document["rows"][0]["id"] == "macro-us10y"
-    assert document["rows"][0]["close"] == 4.75
+    assert document["rows"][0]["close"] == source_document["latestValue"]
     assert document["rows"][0]["changeUnit"] == "basis_points"
     assert document["rows"][0]["spark30d"]
