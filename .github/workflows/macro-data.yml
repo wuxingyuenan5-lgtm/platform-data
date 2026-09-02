@@ -43,6 +43,8 @@ jobs:
           python -m platform_data.cli refresh-treasury-market-tenors
           python -m platform_data.cli refresh-fred-macro-core
           python -m platform_data.cli refresh-yahoo-macro-market
+          python -m platform_data.cli refresh-global-m2
+          python -m platform_data.cli refresh-chinabond-market-tenors
           python -m platform_data.cli build-macro-market-detail
           python -m platform_data.cli build-macro-dashboard
 

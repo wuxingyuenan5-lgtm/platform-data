@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
+from platform_data.pipelines.chinabond_macro import refresh_chinabond_market_tenors
 from platform_data.pipelines.fred_macro import refresh_fred_macro_core
 from platform_data.pipelines.global_m2 import refresh_global_m2
 from platform_data.pipelines.macro_dashboard import build_macro_dashboard
@@ -42,6 +43,10 @@ def main() -> int:
     subparsers.add_parser(
         "refresh-global-m2", help="refresh the frozen five-region Global M2 proxy"
     )
+    subparsers.add_parser(
+        "refresh-chinabond-market-tenors",
+        help="refresh official China 2Y/10Y/30Y yields",
+    )
 
     args = parser.parse_args()
 
@@ -77,6 +82,11 @@ def main() -> int:
 
     if args.command == "refresh-global-m2":
         result = refresh_global_m2()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "refresh-chinabond-market-tenors":
+        result = refresh_chinabond_market_tenors()
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
