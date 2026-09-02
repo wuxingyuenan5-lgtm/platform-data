@@ -19,6 +19,7 @@ class FredMacroDefinition:
     unit: str
     frequency: str
     stale_days: int
+    transform: str = "level"
 
 
 FRED_MACRO_SERIES = (
@@ -34,7 +35,41 @@ FRED_MACRO_SERIES = (
     FredMacroDefinition("walcl", "Federal Reserve Total Assets", "WALCL", "usd_million", "weekly", 14),
     FredMacroDefinition("wdtgal", "U.S. Treasury General Account", "WDTGAL", "usd_million", "weekly", 14),
     FredMacroDefinition("rrp", "Overnight Reverse Repurchase Agreements", "RRPONTSYD", "usd_billion", "daily_business_day", 7),
+    FredMacroDefinition("us_real_gdp_yoy", "U.S. Real GDP YoY", "GDPC1", "percent", "quarterly", 150, "yoy"),
+    FredMacroDefinition("us_indpro_yoy", "U.S. Industrial Production YoY", "INDPRO", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_initial_claims_4w", "U.S. Initial Claims 4W MA", "IC4WSA", "persons", "weekly", 14),
+    FredMacroDefinition("us_cfnai", "Chicago Fed National Activity Index", "CFNAI", "index", "monthly", 75),
+    FredMacroDefinition("us_cfnai_ma3", "Chicago Fed National Activity Index 3M MA", "CFNAIMA3", "index", "monthly", 75),
+    FredMacroDefinition("us_core_cpi_yoy", "U.S. Core CPI YoY", "CPILFESL", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_cpi_yoy", "U.S. CPI YoY", "CPIAUCSL", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_pce_yoy", "U.S. PCE Price Index YoY", "PCEPI", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_core_pce_yoy", "U.S. Core PCE YoY", "PCEPILFE", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_ppi_yoy", "U.S. PPI Final Demand YoY", "PPIFIS", "percent", "monthly", 75, "yoy"),
+    FredMacroDefinition("us_5y_breakeven", "U.S. 5Y Breakeven Inflation", "T5YIE", "percent", "daily_business_day", 7),
+    FredMacroDefinition("us_5y5y_forward", "U.S. 5Y5Y Forward Inflation", "T5YIFR", "percent", "daily_business_day", 7),
+    FredMacroDefinition("fed_target_lower", "Federal Funds Target Lower", "DFEDTARL", "percent", "daily", 7),
+    FredMacroDefinition("fed_target_upper", "Federal Funds Target Upper", "DFEDTARU", "percent", "daily", 7),
+    FredMacroDefinition("iorb", "Interest on Reserve Balances", "IORB", "percent", "daily", 7),
+    FredMacroDefinition("on_rrp_award", "ON RRP Award Rate", "RRPONTSYAWARD", "percent", "daily", 7),
+    FredMacroDefinition("effr", "Effective Federal Funds Rate", "EFFR", "percent", "daily_business_day", 7),
 )
+
+
+def _year_over_year(observations: list[Observation], frequency: str) -> list[Observation]:
+    lag = 4 if frequency == "quarterly" else 12
+    rows: list[Observation] = []
+    valid = [item for item in observations if item.value is not None]
+    for index in range(lag, len(valid)):
+        current = valid[index]
+        previous = valid[index - lag]
+        if previous.value:
+            rows.append(
+                Observation(
+                    date=current.date,
+                    value=(current.value / previous.value - 1) * 100,
+                )
+            )
+    return rows
 
 
 def _publish_series(
@@ -85,6 +120,8 @@ def refresh_fred_macro_core(*, root: Path | None = None) -> list[dict[str, objec
         observations, source_url = fetch_fred_series(
             FredSeriesRequest(series_id=definition.source_id, start_date=start_date)
         )
+        if definition.transform == "yoy":
+            observations = _year_over_year(observations, definition.frequency)
         results.append(_publish_series(definition, observations, source_url, repo_root))
         published[definition.series_id] = (definition, observations, source_url)
     walcl = published["walcl"][1]

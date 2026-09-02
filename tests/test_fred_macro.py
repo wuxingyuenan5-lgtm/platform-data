@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from platform_data.models import Observation
-from platform_data.pipelines.fred_macro import FredMacroDefinition, _publish_series
+from platform_data.pipelines.fred_macro import FredMacroDefinition, _publish_series, _year_over_year
 from platform_data.providers.fred import parse_fred_csv
 
 
@@ -28,3 +28,13 @@ def test_publish_fred_series_keeps_provenance(tmp_path: Path):
     payload = (tmp_path / "public/v1/macro/series/sofr.json").read_text(encoding="utf-8")
     assert '"source": "fred"' in payload
     assert '"sourceSeriesId": "SOFR"' in payload
+
+
+def test_year_over_year_uses_frequency_lag():
+    observations = [Observation(date=f"2025-{month:02d}-01", value=100 + month) for month in range(1, 13)]
+    observations.append(Observation(date="2026-01-01", value=111.1))
+
+    result = _year_over_year(observations, "monthly")
+
+    assert len(result) == 1
+    assert round(result[0].value or 0, 2) == 10.0
