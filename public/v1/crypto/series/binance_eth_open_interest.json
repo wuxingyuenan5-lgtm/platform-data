@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0",
+  "seriesId": "binance_eth_open_interest",
+  "label": "Binance ETHUSDT Open Interest",
+  "status": "ready",
+  "latestValue": 5594949303.8571,
+  "unit": "usd",
+  "currency": null,
+  "frequency": "daily",
+  "timezone": "UTC",
+  "source": "binance_public_api",
+  "upstreamSource": "Binance",
+  "sourceSeriesId": "ETHUSDT",
+  "sourceUrl": "https://fapi.binance.com/futures/data/openInterestHist?symbol=ETHUSDT&period=1h&limit=500",
+  "observationDate": "2026-09-02",
+  "asOf": "2026-09-02",
+  "retrievedAt": "2026-09-02T13:30:36.014949Z",
+  "isStale": false,
+  "methodologyVersion": "binance_usdm_oi_daily_last_usd_v1",
+  "qualityFlags": [
+    "venue_binance",
+    "mode_venue_not_aggregate",
+    "quote_asset_usdt"
+  ],
+  "rightsScope": "official_public_market_data",
+  "observations": [
+    {
+      "date": "2026-08-12",
+      "value": 4357424895.66496
+    },
+    {
+      "date": "2026-08-13",
+      "value": 4430548035.2148
+    },
+    {
+      "date": "2026-08-14",
+      "value": 4402896097.531967
+    },
+    {
+      "date": "2026-08-15",
+      "value": 4447449941.1692
+    },
+    {
+      "date": "2026-08-16",
+      "value": 4427240817.25208
+    },
+    {
+      "date": "2026-08-17",
+      "value": 4524824370.362932
+    },
+    {
+      "date": "2026-08-18",
+      "value": 4539713292.533255
+    },
+    {
+      "date": "2026-08-19",
+      "value": 5245974478.36737
+    },
+    {
+      "date": "2026-08-20",
+      "value": 5361586242.644646
+    },
+    {
+      "date": "2026-08-21",
+      "value": 6088093770.876
+    },
+    {
+      "date": "2026-08-22",
+      "value": 5717671016.56737
+    },
+    {
+      "date": "2026-08-23",
+      "value": 5829465882.34255
+    },
+    {
+      "date": "2026-08-24",
+      "value": 5974746222.80718
+    },
+    {
+      "date": "2026-08-25",
+      "value": 5853831935.72658
+    },
+    {
+      "date": "2026-08-26",
+      "value": 6103802362.025869
+    },
+    {
+      "date": "2026-08-27",
+      "value": 5998518406.729234
+    },
+    {
+      "date": "2026-08-28",
+      "value": 5762023303.308
+    },
+    {
+      "date": "2026-08-29",
+      "value": 5758345020.50115
+    },
+    {
+      "date": "2026-08-30",
+      "value": 5789290999.46064
+    },
+    {
+      "date": "2026-08-31",
+      "value": 5795387618.86581
+    },
+    {
+      "date": "2026-09-01",
+      "value": 5612492320.2684
+    },
+    {
+      "date": "2026-09-02",
+      "value": 5594949303.8571
+    }
+  ]
+}

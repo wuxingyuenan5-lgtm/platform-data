@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0",
+  "seriesId": "binance_btc_open_interest",
+  "label": "Binance BTCUSDT Open Interest",
+  "status": "ready",
+  "latestValue": 8273533041.8148,
+  "unit": "usd",
+  "currency": null,
+  "frequency": "daily",
+  "timezone": "UTC",
+  "source": "binance_public_api",
+  "upstreamSource": "Binance",
+  "sourceSeriesId": "BTCUSDT",
+  "sourceUrl": "https://fapi.binance.com/futures/data/openInterestHist?symbol=BTCUSDT&period=1h&limit=500",
+  "observationDate": "2026-09-02",
+  "asOf": "2026-09-02",
+  "retrievedAt": "2026-09-02T13:30:36.014949Z",
+  "isStale": false,
+  "methodologyVersion": "binance_usdm_oi_daily_last_usd_v1",
+  "qualityFlags": [
+    "venue_binance",
+    "mode_venue_not_aggregate",
+    "quote_asset_usdt"
+  ],
+  "rightsScope": "official_public_market_data",
+  "observations": [
+    {
+      "date": "2026-08-12",
+      "value": 7035019910.463911
+    },
+    {
+      "date": "2026-08-13",
+      "value": 6958416661.767381
+    },
+    {
+      "date": "2026-08-14",
+      "value": 7040646807.304517
+    },
+    {
+      "date": "2026-08-15",
+      "value": 7033371112.6536
+    },
+    {
+      "date": "2026-08-16",
+      "value": 6970546622.475
+    },
+    {
+      "date": "2026-08-17",
+      "value": 6854413381.2315
+    },
+    {
+      "date": "2026-08-18",
+      "value": 6882009800.893601
+    },
+    {
+      "date": "2026-08-19",
+      "value": 7427714455.22111
+    },
+    {
+      "date": "2026-08-20",
+      "value": 7778506424.449
+    },
+    {
+      "date": "2026-08-21",
+      "value": 8339726433.9501
+    },
+    {
+      "date": "2026-08-22",
+      "value": 8148471623.845456
+    },
+    {
+      "date": "2026-08-23",
+      "value": 8155207658.5112
+    },
+    {
+      "date": "2026-08-24",
+      "value": 8441364127.7768
+    },
+    {
+      "date": "2026-08-25",
+      "value": 8397202897.75
+    },
+    {
+      "date": "2026-08-26",
+      "value": 8323924496.3588705
+    },
+    {
+      "date": "2026-08-27",
+      "value": 8730712240.0174
+    },
+    {
+      "date": "2026-08-28",
+      "value": 8229263623.373912
+    },
+    {
+      "date": "2026-08-29",
+      "value": 8424053324.202
+    },
+    {
+      "date": "2026-08-30",
+      "value": 8363374454.2661
+    },
+    {
+      "date": "2026-08-31",
+      "value": 8467763171.4109
+    },
+    {
+      "date": "2026-09-01",
+      "value": 8416890772.248
+    },
+    {
+      "date": "2026-09-02",
+      "value": 8273533041.8148
+    }
+  ]
+}

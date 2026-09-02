@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import json
 
+from platform_data.pipelines.binance_crypto import refresh_binance_crypto_core
 from platform_data.pipelines.cftc_commodity import refresh_cftc_commodity_core
 from platform_data.pipelines.chinabond_macro import refresh_chinabond_market_tenors
 from platform_data.pipelines.commodity_dashboard import build_commodity_dashboard
+from platform_data.pipelines.crypto_dashboard import build_crypto_dashboard
 from platform_data.pipelines.eia_commodity import refresh_eia_commodity_core
 from platform_data.pipelines.fred_macro import refresh_fred_macro_core
 from platform_data.pipelines.global_m2 import refresh_global_m2
@@ -60,6 +62,13 @@ def main() -> int:
     subparsers.add_parser(
         "refresh-eia-commodity-core",
         help="refresh official EIA weekly petroleum inventories",
+    )
+    subparsers.add_parser(
+        "refresh-binance-crypto-core",
+        help="refresh Binance BTC/ETH spot and USD-M derivatives",
+    )
+    subparsers.add_parser(
+        "build-crypto-dashboard", help="build Crypto V1 dashboard contract"
     )
 
     args = parser.parse_args()
@@ -116,6 +125,16 @@ def main() -> int:
 
     if args.command == "refresh-eia-commodity-core":
         result = refresh_eia_commodity_core()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "refresh-binance-crypto-core":
+        result = refresh_binance_crypto_core()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "build-crypto-dashboard":
+        result = build_crypto_dashboard()
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 
