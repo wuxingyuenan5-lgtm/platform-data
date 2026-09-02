@@ -3,7 +3,7 @@
   "seriesId": "dxy",
   "label": "U.S. Dollar Index",
   "status": "ready",
-  "latestValue": 99.72000122070312,
+  "latestValue": 99.71900177001953,
   "unit": "index",
   "currency": null,
   "frequency": "daily_business_day",
@@ -14,7 +14,7 @@
   "sourceUrl": "https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?range=2y&interval=1d&events=history",
   "observationDate": "2026-09-02",
   "asOf": "2026-09-02",
-  "retrievedAt": "2026-09-02T06:07:55.666410Z",
+  "retrievedAt": "2026-09-02T06:11:42.688060Z",
   "isStale": false,
   "methodologyVersion": "yahoo_adjusted_close_v1",
   "qualityFlags": [],
@@ -2034,7 +2034,7 @@
     },
     {
       "date": "2026-09-02",
-      "value": 99.72000122070312
+      "value": 99.71900177001953
     }
   ]
 }
