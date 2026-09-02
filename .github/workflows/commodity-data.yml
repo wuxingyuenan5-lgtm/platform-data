@@ -6,7 +6,9 @@ on:
     paths:
       - "src/platform_data/providers/cftc.py"
       - "src/platform_data/pipelines/cftc_commodity.py"
+      - "src/platform_data/pipelines/commodity_dashboard.py"
       - "tests/test_cftc.py"
+      - "tests/test_commodity_dashboard.py"
       - ".github/workflows/commodity-data.yml"
   schedule:
     - cron: "30 12 * * 6"
