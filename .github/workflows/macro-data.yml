@@ -41,12 +41,13 @@ jobs:
       - name: Refresh U.S. Treasury market tenors
         run: |
           python -m platform_data.cli refresh-treasury-market-tenors
+          python -m platform_data.cli refresh-fred-macro-core
           python -m platform_data.cli build-macro-market-detail
 
       - name: Commit material data changes only
         shell: bash
         run: |
-          git add public/v1/macro/series/us_treasury_2y.json public/v1/macro/series/us_treasury_10y.json public/v1/macro/series/us_treasury_30y.json public/v1/macro/market-detail.json history/us_treasury_2y/ history/us_treasury_10y/ history/us_treasury_30y/
+          git add public/v1/macro/series/ public/v1/macro/market-detail.json history/us_treasury_2y/ history/us_treasury_10y/ history/us_treasury_30y/
           if git diff --cached --quiet; then
             echo "No material Treasury data changes."
             exit 0
