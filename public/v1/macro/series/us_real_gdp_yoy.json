@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "seriesId": "us_real_gdp_yoy",
   "label": "U.S. Real GDP YoY",
-  "status": "stale",
+  "status": "ready",
   "latestValue": 2.097671547016011,
   "unit": "percent",
   "currency": null,
@@ -14,12 +14,10 @@
   "sourceUrl": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GDPC1&cosd=2014-09-01",
   "observationDate": "2026-04-01",
   "asOf": "2026-04-01",
-  "retrievedAt": "2026-09-02T06:01:01.552793Z",
-  "isStale": true,
+  "retrievedAt": "2026-09-02T06:11:14.791808Z",
+  "isStale": false,
   "methodologyVersion": "fred_public_csv_v1",
-  "qualityFlags": [
-    "stale_latest_observation"
-  ],
+  "qualityFlags": [],
   "rightsScope": "internal_research_with_attribution",
   "observations": [
     {

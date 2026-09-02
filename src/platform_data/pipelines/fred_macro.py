@@ -35,7 +35,7 @@ FRED_MACRO_SERIES = (
     FredMacroDefinition("walcl", "Federal Reserve Total Assets", "WALCL", "usd_million", "weekly", 14),
     FredMacroDefinition("wdtgal", "U.S. Treasury General Account", "WDTGAL", "usd_million", "weekly", 14),
     FredMacroDefinition("rrp", "Overnight Reverse Repurchase Agreements", "RRPONTSYD", "usd_billion", "daily_business_day", 7),
-    FredMacroDefinition("us_real_gdp_yoy", "U.S. Real GDP YoY", "GDPC1", "percent", "quarterly", 150, "yoy"),
+    FredMacroDefinition("us_real_gdp_yoy", "U.S. Real GDP YoY", "GDPC1", "percent", "quarterly", 200, "yoy"),
     FredMacroDefinition("us_indpro_yoy", "U.S. Industrial Production YoY", "INDPRO", "percent", "monthly", 75, "yoy"),
     FredMacroDefinition("us_initial_claims_4w", "U.S. Initial Claims 4W MA", "IC4WSA", "persons", "weekly", 14),
     FredMacroDefinition("us_cfnai", "Chicago Fed National Activity Index", "CFNAI", "index", "monthly", 75),
