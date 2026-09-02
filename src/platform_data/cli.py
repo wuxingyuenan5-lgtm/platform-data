@@ -6,6 +6,7 @@ import json
 from platform_data.pipelines.cftc_commodity import refresh_cftc_commodity_core
 from platform_data.pipelines.chinabond_macro import refresh_chinabond_market_tenors
 from platform_data.pipelines.commodity_dashboard import build_commodity_dashboard
+from platform_data.pipelines.eia_commodity import refresh_eia_commodity_core
 from platform_data.pipelines.fred_macro import refresh_fred_macro_core
 from platform_data.pipelines.global_m2 import refresh_global_m2
 from platform_data.pipelines.macro_dashboard import build_macro_dashboard
@@ -55,6 +56,10 @@ def main() -> int:
     )
     subparsers.add_parser(
         "build-commodity-dashboard", help="build Commodity V1 dashboard contract"
+    )
+    subparsers.add_parser(
+        "refresh-eia-commodity-core",
+        help="refresh official EIA weekly petroleum inventories",
     )
 
     args = parser.parse_args()
@@ -106,6 +111,11 @@ def main() -> int:
 
     if args.command == "build-commodity-dashboard":
         result = build_commodity_dashboard()
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if args.command == "refresh-eia-commodity-core":
+        result = refresh_eia_commodity_core()
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
 

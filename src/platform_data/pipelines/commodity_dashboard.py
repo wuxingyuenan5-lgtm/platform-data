@@ -9,6 +9,10 @@ from platform_data.models import CanonicalSeries
 from platform_data.storage.files import write_json_if_changed
 
 COMMODITIES = ("gold", "silver", "copper", "wti", "natural_gas")
+EIA_GROUPS = {
+    "eiaCrudeStocks": ["eia_us_commercial_crude_stocks", "eia_cushing_crude_stocks"],
+    "eiaProductsStocks": ["eia_us_motor_gasoline_stocks", "eia_us_distillate_stocks"],
+}
 
 
 def build_commodity_dashboard(*, root: Path | None = None) -> dict[str, object]:
@@ -45,6 +49,27 @@ def build_commodity_dashboard(*, root: Path | None = None) -> dict[str, object]:
                 ]
                 group.append(document)
             groups[group_id] = group
+    for group_id, series_ids in EIA_GROUPS.items():
+        group = []
+        for series_id in series_ids:
+            path = repo_root / "public/v1/commodity/series" / f"{series_id}.json"
+            if not path.exists():
+                continue
+            series = CanonicalSeries.model_validate_json(
+                path.read_text(encoding="utf-8")
+            )
+            all_series.append(series)
+            document = series.model_dump(mode="json")
+            cutoff = date.fromisoformat(
+                series.observationDate or series.observations[-1].date
+            ) - timedelta(days=5 * 366)
+            document["observations"] = [
+                item.model_dump(mode="json")
+                for item in series.observations
+                if date.fromisoformat(item.date) >= cutoff
+            ]
+            group.append(document)
+        groups[group_id] = group
     if not all_series:
         raise RuntimeError("no Commodity dashboard series available")
     payload = {

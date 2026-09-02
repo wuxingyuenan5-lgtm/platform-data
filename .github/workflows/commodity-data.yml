@@ -5,12 +5,16 @@ on:
   push:
     paths:
       - "src/platform_data/providers/cftc.py"
+      - "src/platform_data/providers/eia.py"
       - "src/platform_data/pipelines/cftc_commodity.py"
       - "src/platform_data/pipelines/commodity_dashboard.py"
+      - "src/platform_data/pipelines/eia_commodity.py"
       - "tests/test_cftc.py"
       - "tests/test_commodity_dashboard.py"
+      - "tests/test_eia.py"
       - ".github/workflows/commodity-data.yml"
   schedule:
+    - cron: "30 16 * * 3"
     - cron: "30 12 * * 6"
 
 permissions:
@@ -23,6 +27,8 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -36,16 +42,21 @@ jobs:
         run: |
           python -m platform_data.cli refresh-cftc-commodity-core
           python -m platform_data.cli build-commodity-dashboard
+      - name: Refresh EIA petroleum inventories
+        if: ${{ env.EIA_API_KEY != '' }}
+        run: |
+          python -m platform_data.cli refresh-eia-commodity-core
+          python -m platform_data.cli build-commodity-dashboard
       - name: Commit material data changes only
         shell: bash
         run: |
           git add public/v1/commodity/series/ public/v1/commodity/dashboard.json
           if git diff --cached --quiet; then
-            echo "No material CFTC data changes."
+            echo "No material Commodity data changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "data: refresh CFTC commodity positioning"
+          git commit -m "data: refresh official Commodity series"
           git pull --rebase origin main
           git push
