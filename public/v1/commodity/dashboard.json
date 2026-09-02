@@ -16112,6 +16112,8 @@
           }
         ]
       }
-    ]
+    ],
+    "eiaCrudeStocks": [],
+    "eiaProductsStocks": []
   }
 }
